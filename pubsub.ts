@@ -2,47 +2,36 @@
 // subcribe function - Event ----> returns f, if you call f then you will unsubscribed
 // publish -> event, data
 
+class PubSub {
+    private _eventList : { [key: string]: Array<(data: any) => void> } = {}
 
-class Pubsub {
-
-    // eventName: [eventListener1, eventListener2,.....]
-    // 'sendMessage': [f1, g1, h1], 'sendEmoji': [f2,g2,h2]
-
-    private eventList : { [key: string]: Array<(data: any) => void> } = {};
-
-    subscribe(event: string, eventListener: (data: any) => void): () => void {
-
-        if(!this.eventList[event]) {
-            this.eventList[event] = []; // create a new array if the event is never prev registered
+    public subscribe(event: string, eventCb: (data: any) => void): () => void {
+        if(!this._eventList[event]) {
+            this._eventList[event] = []; // create a new array if the event is not present in the eventList array
         }
 
-        this.eventList[event].push(eventListener);
+        this._eventList[event].push(eventCb);
 
         return () => {
-            this.eventList[event] = this.eventList[event].filter(listener => listener !== eventListener);
+            this._eventList[event] = this._eventList[event].filter(it => it !== eventCb);
         }
     }
 
-    publish(event: string, data: any): void {
-        if(!this.eventList[event]) {
+    public publish(event: string, data: any): void {
+        if(!this._eventList[event]) {
             return;
         }
 
-        this.eventList[event].forEach(currEventListener => currEventListener(data));
+        this._eventList[event].forEach((cb) => cb(data));
     }
 }
 
+const pubsub = new PubSub();
 
-const pubsub = new Pubsub();
-
-const messageTopicUnsubscribe1 = pubsub.subscribe('sendMessage', function f1(data) {
-    console.log("send message received in f", data);
-});
-const messageTopicUnsubscribe2 = pubsub.subscribe('sendMessage', function g1(data) {
-    console.log("send message received in g", data)
+const messageTopic = pubsub.subscribe('onClick', (data) => {
+    console.log("onClick event received", data)
 });
 
-// somewhere elese in the code
 setInterval(() => {
-    pubsub.publish('sendMessage', { senderId: 1, messageContent: Date.now() });
-}, 3000);
+    pubsub.publish('onClick', { id: 1, data: 'Test' })
+}, 3000)
