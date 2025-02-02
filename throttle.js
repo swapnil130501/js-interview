@@ -46,3 +46,18 @@ const handleScroll = throttle(() => {
 // Attach the throttled scroll handler
 window.addEventListener("scroll", handleScroll);
 
+
+function throttle(cb, delay) {
+    isRunning = false;
+    
+    return function (...args) {
+        if(isRunning == false) {
+            isRunning = true;
+            setTimeout(() => {
+                isRunning = false;
+            }, delay)
+        }
+
+        cb(...args);
+    }
+}
