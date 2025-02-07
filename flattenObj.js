@@ -1,16 +1,12 @@
-function flattenObj(obj) {
-    let res = {};
-
-    for(let it of obj) {
-        if(obj[it] === typeof 'object') {
-            
-        }
-
-        else {
-            res[""]
+function flattenObj(obj, parent = "", res = {}) {
+    for (let key in obj) {
+        if (typeof obj[key] === "object" && obj[key] !== null) {
+            flattenObj(obj[key], key, res);
+        } else {
+            res[`${parent}.${key}`] = obj[key];
         }
     }
-
+    return res;
 }
 
 const person = {
@@ -28,39 +24,6 @@ const person = {
             location: {
                 city: "San Francisco",
                 state: "California"
-            }
-        }
-    },
-    education: {
-        highSchool: {
-            name: "Springfield High",
-            year: 2010,
-            location: {
-                city: "Springfield",
-                state: "Illinois"
-            }
-        },
-        college: {
-            name: "MIT",
-            degree: "Computer Science",
-            graduationYear: 2014
-        }
-    },
-    parents: {
-        father: {
-            name: "Robert Doe",
-            age: 55,
-            occupation: {
-                title: "Doctor",
-                hospital: "City Hospital"
-            }
-        },
-        mother: {
-            name: "Jane Doe",
-            age: 52,
-            occupation: {
-                title: "Teacher",
-                school: "Springfield High School"
             }
         }
     }
