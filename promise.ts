@@ -25,15 +25,22 @@ class MyPromise {
     }
 
     public then(handlerCb: TPromiseThenCb) {
-        if(this._state === PromiseState.FULFILLED) {
-            handlerCb(this._value);
-        }
-
-        else {
-            this._onFulfillmentArray.push(handlerCb);
-        }
-
-        return this;
+        return new MyPromise((resolve, reject) => {
+            try {
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+            if(this._state === PromiseState.FULFILLED) {
+                handlerCb(this._value);
+            }
+    
+            else {
+                this._onFulfillmentArray.push(handlerCb);
+            }
+    
+            return this;
+        })
     }
 
     public catch(handlerCb: TPromiseCatchCb) {
